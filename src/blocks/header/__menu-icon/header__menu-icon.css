@@ -1,0 +1,12 @@
+.header__menu-icon {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .header__menu-icon {
+    display: block;
+    cursor: pointer;
+    margin-top: 45px;
+    z-index: 2;
+  }
+}

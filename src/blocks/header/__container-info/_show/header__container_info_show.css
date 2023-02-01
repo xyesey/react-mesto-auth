@@ -1,0 +1,12 @@
+.header__container-info_show {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 200px;
+  height: auto;
+  padding: 20px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}

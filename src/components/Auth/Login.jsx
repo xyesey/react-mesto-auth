@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FormAuth from "./FormAuth";
 import InfoTooltip from "./InfoTooltip";
 
 function Login({ handleSignIn, errorModal, onClose }) {
@@ -27,29 +28,11 @@ function Login({ handleSignIn, errorModal, onClose }) {
   return (
     <div className="auth">
       <h1 className="auth__title">Войти</h1>
-      <form className="auth__form" onSubmit={handleSubmit}>
-        <input
-          required
-          className="auth__input"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formValue.email}
-          onChange={handleChange}
-        />
-        <input
-          required
-          className="auth__input"
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formValue.password}
-          onChange={handleChange}
-        />
-        <button type="submit" className="auth__button">
-          Войти
-        </button>
-      </form>
+      <FormAuth
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        formValue={formValue}
+      />
       <InfoTooltip errorModal={errorModal} onClose={onClose} />
     </div>
   );

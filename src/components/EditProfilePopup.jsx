@@ -6,10 +6,10 @@ import PopupWithForm from "./PopupWithForm";
 function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
   const userData = useContext(CurrentUserContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    onUpdateUser({
+    await onUpdateUser({
       name: name.value,
       about: about.value,
     });

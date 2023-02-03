@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import FormAuth from "./FormAuth";
 import InfoTooltip from "./InfoTooltip";
 
 function Register({ handleSignUp, successModal, errorModal, onClose }) {
@@ -28,32 +29,14 @@ function Register({ handleSignUp, successModal, errorModal, onClose }) {
   return (
     <div className="auth">
       <h1 className="auth__title">Регистрация</h1>
-      <form className="auth__form" onSubmit={handleSubmit}>
-        <input
-          required
-          className="auth__input"
-          type="email"
-          name="email"
-          value={formValue.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-        <input
-          required
-          className="auth__input"
-          type="password"
-          name="password"
-          value={formValue.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
-        <button className="auth__button" type="submit">
-          Зарегистрироваться
-        </button>
-        <Link to="/sign-in" className="auth__caption">
-          Уже зарегистрировались? Войти
-        </Link>
-      </form>
+      <FormAuth
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        formValue={formValue}
+      />
+      <Link to="/sign-in" className="auth__caption">
+        Уже зарегистрировались? Войти
+      </Link>
       <InfoTooltip
         successModal={successModal}
         errorModal={errorModal}

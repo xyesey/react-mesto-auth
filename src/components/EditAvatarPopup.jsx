@@ -17,8 +17,8 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
     });
   }, [isOpen]);
 
-  const onSubmit = (data) => {
-    onUpdateAvatar({
+  const onSubmit = async (data) => {
+    await onUpdateAvatar({
       avatar: data.url,
     });
     onClose();

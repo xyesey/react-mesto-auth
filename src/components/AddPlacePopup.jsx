@@ -5,9 +5,9 @@ import PopupWithForm from "./PopupWithForm";
 function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   const {
     register,
-    formState: { errors, },
+    formState: { errors },
     handleSubmit,
-    reset
+    reset,
   } = useForm({
     mode: "onChange",
   });
@@ -15,14 +15,14 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
   useEffect(() => {
     reset({
       placeName: "",
-      url: ""
-    })
-  }, [isOpen])
+      url: "",
+    });
+  }, [isOpen]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
 
-    onAddCard({
+    await onAddCard({
       name: data.placeName,
       link: data.url,
     });
@@ -47,6 +47,10 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
           minLength: {
             value: 3,
             message: "Минимум 3 символа.",
+          },
+          maxLength: {
+            value: 30,
+            message: "Максимум 30 символов",
           },
         })}
       ></input>

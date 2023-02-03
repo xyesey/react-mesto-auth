@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { api } from "../utils/api";
+import { api } from "../api/api";
 import { CardContext } from "../contexts/CardContext";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import * as auth from "./Auth/Auth";
+import * as auth from "../api/Auth";
 
 import Footer from "./Footer";
 import Header from "./Header";
@@ -69,20 +69,19 @@ function App() {
       });
   };
 
-  const handleSignIn = (formValue) => {
-    auth
-      .authorize(formValue.password, formValue.email)
-      .then((res) => {
-        if (res.token) {
-          localStorage.setItem("jwt", res.token);
-          handleLogin({ email: res.email });
-          navigate("/mesto-react", { replace: true });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsErrorModal(true);
-      });
+  const handleSignIn = async ({ email, password }) => {
+    try {
+      const res = await auth.authorize(password, email);
+      if (res.token) {
+        localStorage.setItem("jwt", res.token);
+        handleLogin({ email: res.email });
+        setUserEmail(email);
+        navigate("/mesto-react", { replace: true });
+      }
+    } catch (err) {
+      console.log(err);
+      setIsErrorModal(true);
+    }
   };
 
   useEffect(() => {
@@ -101,18 +100,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    Promise.all([api.getInitialCards(), api.getInfoProfile(currentUser)])
-      .then(([cardsData, userData]) => {
-        setCards([...cards, ...cardsData]);
-        setCurrentUser({
-          name: userData.name,
-          about: userData.about,
-          avatar: userData.avatar,
-          id: userData._id,
-        });
-      })
-      .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
-  }, []);
+    if (loggedIn) {
+      Promise.all([api.getInitialCards(), api.getInfoProfile(currentUser)])
+        .then(([cardsData, userData]) => {
+          setCards([...cards, ...cardsData]);
+          setCurrentUser({
+            name: userData.name,
+            about: userData.about,
+            avatar: userData.avatar,
+            id: userData._id,
+          });
+        })
+        .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
+    }
+  }, [loggedIn]);
 
   const closeAllPopups = () => {
     setEditProfile(false);
@@ -123,22 +124,37 @@ function App() {
     setIsSuccessModal(false);
   };
 
-  const handleUpdateUser = (data) => {
-    api
-      .infoProfileEdit({ name: data.name, about: data.about })
-      .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
-  };
-  const handleUpdateAvatar = (data) => {
-    api
-      .setAvatar({ avatar: data.avatar })
-      .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
+  const handleUpdateUser = async (data) => {
+    try {
+      const response = await api.infoProfileEdit({
+        name: data.name,
+        about: data.about,
+      });
+      setCurrentUser(response);
+    } catch (err) {
+      console.log(`Ошибка закгрузки данныХ: ${err}`);
+    }
   };
 
-  const handleAddPlaceSubmit = (data) => {
-    api
-      .postedCard({ name: data.name, link: data.link })
-      .then((data) => setCards([data, ...cards]))
-      .catch((err) => console.log(`Ошибка загрузки данных: ${err}`));
+  const handleUpdateAvatar = async (data) => {
+    try {
+      const response = await api.setAvatar({ avatar: data.avatar });
+      setCurrentUser(response);
+    } catch (err) {
+      console.log(`Ошибка закгрузки данныХ: ${err}`);
+    }
+  };
+
+  const handleAddPlaceSubmit = async (data) => {
+    try {
+      const newCard = await api.postedCard({
+        name: data.name,
+        link: data.link,
+      });
+      setCards([newCard, ...cards]);
+    } catch (err) {
+      console.log(`Ошибка закгрузки данныХ: ${err}`);
+    }
   };
 
   const handleCardLike = (card) => {
@@ -166,7 +182,7 @@ function App() {
 
   return (
     <div>
-      <Header currentUser={userEmail} loggedIn={loggedIn} />
+      <Header currentUser={userEmail} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <CurrentUserContext.Provider value={currentUser}>
         <CardContext.Provider value={cards}>
           <Routes>

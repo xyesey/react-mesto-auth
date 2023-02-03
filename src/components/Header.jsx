@@ -1,17 +1,20 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../image/logo.svg";
 
-function Header({ currentUser, loggedIn }) {
+function Header({ currentUser, loggedIn, setLoggedIn }) {
   const [showMenu, setShowMenu] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleShowMenu = () => {
     setShowMenu(!showMenu);
   };
-  
+
   const signOut = () => {
     localStorage.removeItem("jwt");
+    setLoggedIn(false);
+    navigate("/sign-in");
   };
 
   return (
@@ -27,7 +30,12 @@ function Header({ currentUser, loggedIn }) {
                 <div className="header__menu-icon_line"></div>
               </>
             ) : (
-              <div className="header__menu-icon_close-icon" onClick={handleShowMenu}>&#x2715;</div>
+              <div
+                className="header__menu-icon_close-icon"
+                onClick={handleShowMenu}
+              >
+                &#x2715;
+              </div>
             )}
           </div>
 
@@ -37,22 +45,18 @@ function Header({ currentUser, loggedIn }) {
             }`}
           >
             <h1 className="header__container-info_email">{currentUser}</h1>
-            <Link
-              to="/sign-in"
-              onClick={signOut}
-              className="header__container-info_link"
-            >
+            <button onClick={signOut} className="header__container-info_link">
               Выйти
-            </Link>
+            </button>
           </div>
         </>
-      ) : location.pathname === "/sign-up" ? (
-        <Link to="/sign-in" className="header__link-auth">
-          Войти
+      ) : location.pathname === "/sign-in" ? (
+        <Link to="/sign-up" className="header__link-auth">
+          Регистрация
         </Link>
       ) : (
-        <Link to="sign-up" className="header__link-auth">
-          Регистрация
+        <Link to="/sign-in" className="header__link-auth">
+          Войти
         </Link>
       )}
     </div>
